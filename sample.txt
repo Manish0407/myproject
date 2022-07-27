@@ -1,1 +1,0 @@
-{1001=>{:book_name=>"sherlock homes", :book_author=>"howkings", :name=>"manish", :mobile=>9098130071, :adhar=>123456789, :time=>2022-07-26 19:24:58.577657693 +0530}}
