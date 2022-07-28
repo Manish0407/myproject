@@ -35,4 +35,13 @@ module Book_Issue
     file.syswrite("#{$issue_details}");
     file.close();
   end
+
+  def Book_Issue.book_return
+    puts "Enter your cust id : "
+    cust_id = gets.to_i
+    puts "Enter book id :"
+    @book_id = gets.to_i
+
+    puts "Book successfuly returned"
+  end
 end
