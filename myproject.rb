@@ -1,51 +1,95 @@
 $LOAD_PATH << '.'
 require 'book_issue.rb'
-require 'borrower_details.rb'
+require 'student_details.rb'
 require 'book_add.rb'
-require 'choice.rb'
-class Library
-  def Library.library(choice)
-    @@choice = choice
+require 'login.rb'
+require 'book_details.rb'
 
-    case @@choice
+class Library
+  extend Login
+  extend Admin
+  extend Student
+  extend BookIssue
+  extend BookDetails
+  extend BookAdd
+  extend StudentDetails
+  def Library.admin(choice)
+    @choice = choice
+
+    case @choice
     when 1
-      Book_Issue.getData
-      Choice.repeat
+      Library.get_data
+      Library.admin_repeat
     when 2
-      Book_Issue.book_return
-      Choice.repeat
+      print "enter book id :"
+      id = gets.chomp
+      $hash.delete(id)
+      Library.admin_repeat 
 
     when 3
-      Book_Add.add
-      Choice.repeat
+      Library.book_add
+      Library.admin_repeat
 
     when 4
-      $books_collection.each do |key, value|
-        puts "#{key}  #{value}"
-      end
-
-      Choice.repeat
+      Library.books
+      Library.admin_repeat
 
     when 5
 
-      Borrower_Details.details
+      Library.details
       
-      Choice.repeat
+      Library.admin_repeat
 
     when 6
-      puts "thanks for visiting have a nice day."
-      File.truncate("details.txt", 0)
-      exit
-
+      puts "......................Logout........................"
+      print "do you want to continue (yes/no) : "
+      input = gets.chomp
+      if input == "yes"
+        Library.user
+      else
+        exit
+      end
     else
       puts "you entered a invailed key please enter a valid key"
-      Choice.user
+      Library.admin_choice
     end
-    
+  end
+
+  def Library.student(choice)
+    @choice = choice
+
+    case @choice
+    when 1
+      File.foreach("book_details.txt") do |read| 
+       puts read
+      end
+      Library.student_repeat
+
+    when 2
+      Library.get_data
+      Library.student_repeat
+
+    when 3
+      Library.book_return
+      Library.student_repeat
+
+    when 4
+      puts "......................Logout........................"
+      print "do you want to continue (yes/no) : "
+      input = gets.chomp
+      if input == "yes"
+        Library.user
+      else
+        exit
+      end
+    else
+      puts "you entered a invailed key please enter a valid key"
+      Library.admin_choice
+    end
   end
 end
 puts "=============================================================================================================================================="
 puts "......................................Welcome to the shriffle library, Hope you are having a great day!......................................"
 puts "=============================================================================================================================================="
-obj = Library.new
-Choice.user
+
+Library.user

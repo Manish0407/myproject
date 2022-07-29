@@ -1,7 +1,6 @@
-module Book_Issue 
-  require 'date'
+module BookIssue 
   $issue_details = []
-  def Book_Issue.getData
+  def get_data
     print "Enter cust id : "
     @cust_id = gets.to_i
     print "Enter book id : "
@@ -14,12 +13,10 @@ module Book_Issue
     @name = gets.chomp
     print "Enter borrower mobile no. : "
     @mobile = gets.to_i
-    print "Enter borrower adhar no. : "
-    @adhar = gets.to_i
-    Book_Issue.method1
+    method1
   end
 
-  def Book_Issue.method1
+  def method1
     borrower = {}
 
     borrower[@cust_id] = { 
@@ -27,21 +24,24 @@ module Book_Issue
       :book_name => @book_name, 
       :book_author => @book_author, 
       :name => @name, 
-      :mobile => @mobile, 
-      :adhar => @adhar,
-      :time => Time.new}
+      :mobile => @mobile}
     $issue_details.push(borrower)
-    file = File.open("details.txt","w+");
-    file.syswrite("#{$issue_details}");
-    file.close();
   end
 
-  def Book_Issue.book_return
+  def book_return
     puts "Enter your cust id : "
-    cust_id = gets.to_i
+    @cust_id = gets
     puts "Enter book id :"
     @book_id = gets.to_i
-
+    File.truncate("details.txt", 0)
+    $issue_details.each do |each_hash|
+      each_hash.each do |each_hash_element|
+        each_hash_element.each do |k,v|
+          k.delete(@cust_id)
+        end
+      end
+    end
+  
     puts "Book successfuly returned"
   end
 end

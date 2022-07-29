@@ -1,17 +1,15 @@
-module Admin
-  def admin_choice
-    puts "\t \tPress 1. for issue book."
-    puts "\t \tPress 2. for delete book."
-    puts "\t \tPress 3. for add a book."
-    puts "\t \tPress 4. for book details."
-    puts "\t \tPress 5 for borrower details."
-    puts "\t \tPress 6. for logout."
+module Student
+  def student_choice
+    puts "\t \tPress 1. for book details."
+    puts "\t \tPress 2. for issue book."
+    puts "\t \tPress 3 for return book"
+    puts "\t \tPress 4. for logout."
     print "\t \tPlease enter your choice : "
     choice = gets.to_i
-    Library.admin(choice)
+    Library.student(choice)
+    
   end
-
-  def admin_repeat
+  def student_repeat
     puts "=============================================================================================================================================="
     print "\t \tDo you want to continue (yes/no) :"
     input = gets.chomp
@@ -20,15 +18,12 @@ module Admin
       puts "=============================================================================================================================================="
       puts "...............................................................Welcome again!................................................................."
       puts "=============================================================================================================================================="
-      admin_choice
-    elsif input == "no"
+      student_choice
+    else
       puts "=============================================================================================================================================="
       puts "...............................................................Thank You!................................................................."
       puts "=============================================================================================================================================="
       exit
-    else
-      puts "you entered wrong key"
-      admin_repeat
     end
   end
 end
