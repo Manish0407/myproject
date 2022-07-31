@@ -26,6 +26,7 @@ module Login
         puts "...................................Welcome to student page..............................."
         puts "======================================================================================="
         Login.student_choice
+        Login.student_repeat
       else
         puts "Wrong password for student please enter valid password"
         user
