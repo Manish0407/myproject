@@ -2,7 +2,7 @@ module Student
   def student_choice
     puts "\t \tPress 1. for book details."
     puts "\t \tPress 2. for issue book."
-    puts "\t \tPress 3 for return book"
+    puts "\t \tPress 3. for return book."
     puts "\t \tPress 4. for logout."
     print "\t \tPlease enter your choice : "
     choice = gets.to_i
