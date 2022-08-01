@@ -6,12 +6,12 @@ module Login
   extend Student
   def user
     print "Enter username : "
-    @@username = gets.chomp
+    username = gets.chomp
     print "Enter password : "
-    @@password = gets.chomp
+    password = gets.chomp
 
-    if @@username == "admin"
-      if @@password == "admin123"
+    if username == "admin"
+      if password == "admin123"
         puts "======================================================================================="
         puts "...................................Welcome to admin page..............................."
         puts "======================================================================================="
@@ -20,8 +20,8 @@ module Login
         puts "Wrong password for admin please enter valid password"
         user
       end
-    elsif @@username == "student"
-      if @@password == "student123"
+    elsif username == "student"
+      if password == "student123"
         puts "======================================================================================="
         puts "...................................Welcome to student page..............................."
         puts "======================================================================================="

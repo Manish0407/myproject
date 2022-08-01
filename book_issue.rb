@@ -12,7 +12,7 @@ module BookIssue
     print "Enter student name : "
     @name = gets.chomp
     
-    $student = {}
+    #$student = {}
 
     $student = { 
       :cust_id => @cust_id,
@@ -22,6 +22,14 @@ module BookIssue
       :name => @name}
 
     return $student
-    
+  end
+  def manage_books
+    #$issue = {}
+
+    $issue = { 
+      :book_id => @book_id,
+      :book_name => @book_name, 
+      :book_author => @book_author}
+    return $issue
   end
 end

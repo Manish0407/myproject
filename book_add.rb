@@ -1,5 +1,3 @@
-$LOAD_PATH << '.'
-require 'book_details.rb'
 module BookAdd
   $books_collection = []
   def books_collection

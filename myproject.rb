@@ -1,66 +1,40 @@
 $LOAD_PATH << '.'
-require 'book_issue.rb'
-require 'student_details.rb'
-require 'book_add.rb'
+require 'all_methods.rb'
 require 'login.rb'
+require 'student.rb'
+require 'choice.rb'
 
 class Library
+  extend AllMethods
   extend Login
   extend Admin
   extend Student
-  extend BookIssue
-  extend BookAdd
-  extend StudentDetails
   def Library.admin(choice)
     @choice = choice
 
     case @choice
     when 1                # for book details.
-      $books_collection.each do |hash|
-        hash.each do |k, v|
-          puts "#{k} => #{v}"
-        end
-        puts
-      end     
+      Library.book_collection  
       Login.admin_repeat
 
     when 2                # for book issue.
-      $student = Library.get_data
-      $issue_details.push($student)
+      Library.issue_request
       Login.admin_repeat
 
-    when 3                # for book return.
-      $student = Library.get_data
-      $issue_details.each do |each_hash|
-        if each_hash.eql?$student
-          $issue_details.delete(each_hash)
-        end
-      end
+   
+    when 3                #for book delete.
+      Library.book_delete
       Login.admin_repeat
 
-    when 4                #for book delete.
-      $book = Library.books_collection
-      $books_collection.each do |each_hash|
-        if each_hash.eql?$book
-          $books_collection.delete(each_hash)
-        end
-      end
-      Login.admin_repeat
-
-    when 5                #for add new book.
-      $book = Library.books_collection
-      $books_collection.push($book)
-      $books_collection.each do |k,v|
-        puts "#{k}  #{v}"
-      end
-      puts
+    when 4                #for add new book.
+      Library.book_add
       Login.admin_repeat  
 
-    when 6                 # for student details.
-      Library.details
+    when 5                 # for student details.
+      Library.student_details
       Login.admin_repeat
 
-    when 7                 # for logout
+    when 6                 # for logout
       puts "......................Logout........................"
       print "do you want to continue (yes/no) : "
       input = gets.chomp
@@ -80,26 +54,19 @@ class Library
 
     case @choice
     when 1                # for book details.
-      $books_collection.each do |hash|
-        hash.each do |k, v|
-          puts "#{k} => #{v}"
-        end
-        puts
-      end   
+     
+      Library.book_collection 
       Library.student_repeat
 
-    when 2
-      $student = Library.get_data
-      $issue_details.push($student)
+    when 2                           #for book issue
+      
+      Library.book_issue
       Library.student_repeat
 
-    when 3
-      $student = Library.get_data
-      $issue_details.each do |each_hash|
-        if each_hash.eql?$student
-          $issue_details.delete(each_hash)
-        end
-      end
+    when 3                           #for return book.
+      
+      Library.book_return
+      
       Library.student_repeat
 
     when 4
