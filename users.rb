@@ -11,21 +11,23 @@ module Users
   end
   
   def start
-    puts "Who are you (admin/student)"
+    puts "A. admin."
+    puts "S. student."
+    puts "E. exit."
     input = gets.chomp
-    if input == "admin"
-      puts "Press 1. for signin."
-      puts "Press any key for back."
+    if input == "a" || input == "A"
+      puts "1. for signin."
+      puts "\t Press any key for back."
       choice = gets.to_i
       if choice == 1
         user
       else
         start
       end
-    elsif input == "student"
-      puts "Press 1. for signin."
-      puts "Press 2. for signup."
-      puts "Press any key for back."
+    elsif input == "s" || input == "S"
+      puts "1. signin."
+      puts "2. signup."
+      puts "\t Press any key for back."
       choice = gets.to_i 
       if choice == 1
         user
@@ -35,7 +37,7 @@ module Users
       else
         start
       end
-    elsif input == "exit"
+    elsif input == "e" || input == "E"
       exit
     else
       start           

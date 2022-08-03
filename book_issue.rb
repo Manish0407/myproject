@@ -1,98 +1,108 @@
-module BookIssue 
-  $issue_details = []
-  $book_request = []
-  $manage = []
-  def get_data
-    print "Enter cust id : "
-    @cust_id = gets.to_i
-    print "Enter book id : "
-    @book_id = gets.to_i
-    print "Enter book name : "
-    @book_name = gets.chomp
-    print "Enter author name : "
-    @book_author = gets.chomp
-    print "Enter student name : "
-    @name = gets.chomp
+require 'book.rb'
+class BookIssue 
+  Issue_details = []
+  ARR = []
+  attr_accessor :cust_id, :book_id, :book_name, :author, :name, :qty
+  def initialize(cust_id, book_id, book_name, book_author, name,qty)
+    @cust_id = cust_id
+    @book_id = book_id
+    @book_name = book_name
+    @author = book_author
+    @name = name
+    @qty = qty
 
-    student = { 
-      :cust_id => @cust_id,
-      :book_id => @book_id,
-      :book_name => @book_name, 
-      :book_author => @book_author, 
-      :name => @name}
+    ARR << self
+    puts "book request sent to admin!"
   end
-  def manage_books
-    issue = { 
-      :book_id => @book_id,
-      :book_name => @book_name, 
-      :book_author => @book_author}
 
-  end
-  def book_issue
-    data = get_data
-    @issue = manage_books
-    $manage.push(@issue)
-    if $books_collection.include?@issue
-      puts "request sent"
-      $book_request.push(data)
+  def self.request
+    if ARR.empty? || ARR == nil
+      puts "No requests"
     else
-      puts "book not available."
-    end  
-
-  end
-  def issue_request
-    #begin
-      if $book_request.empty? || $book_request == nil
-        #raise NoMethodError.new "No requests yet"
-        puts "No requests"
-      else
-        puts "you have issue request."
-        print "Do you want to accept (yes/no) : "
-        input = gets.chomp 
-        if input == "yes"
-          $book_request.each do |request|
-            $issue_details.push(request)
-          end
-          $books_collection.each do |book|
-            $manage.each do |data|
-              if book.eql?data
-                $books_collection.delete(book)
-                puts "Book issued successfully."
-                $book_request = []
-              end
+      puts "you have issue request. "
+      ARR.select do |i|
+        puts "cust_id = #{i.cust_id} \n book_id = #{i.book_id}\n book_name = #{i.book_name}\n book_author = #{i.author}\n student name = #{i.name} \n quantity = #{i.qty}"
+      end
+      puts "do you want to accept (yes/no) :"
+      input = gets.chomp
+      if input == "yes"
+        ARR.select do |data|
+          Issue_details << data
+          Book::Books.find do |book|
+            if book.name == data.book_name
+              book.qty -= data.qty
+              puts "Book issued successfully."
+              ARR.clear
             end
           end
-        else
-          puts "you cancel the request."  
         end
+      else
+        puts "you cancel the request."
       end
-    #rescue NoMethodError => e 
-      #puts e
-    #end      
-  end
-
-  def details
-    $issue_details.each do |each_hash|
-      each_hash.each do |k, v|
-        puts "#{k} => #{v}"
-      end
-      puts
     end
   end
-
-  def book_return
-    @student = get_data
-    @issue = manage_books
-    if $issue_details.include?@student
-      $books_collection.push(@issue)
-      $issue_details.each do |each_hash|
-        if each_hash.eql?@student
-          $issue_details.delete(each_hash)
-          puts "Book returned successfully."
+  
+  def self.issue
+    count = 0
+    print "Enter cust id : "
+    cust_id = gets.to_i
+    print "Enter book id : "
+    book_id = gets.to_i
+    print "Enter book name : "
+    book_name = gets.chomp
+    print "Enter author name : "
+    book_author = gets.chomp
+    print "Enter student name : "
+    name = gets.chomp
+    print "Enter book qty : "
+    qty = gets.to_i
+    if qty != 0
+      Book::Books.find do |book|
+        if book.name == book_name
+          if book.qty >= qty
+            if book.author == book_author
+              BookIssue.new(cust_id, book_id, book_name, book_author, name,qty)
+            else
+              puts "you entered wrong author name."
+            end  
+          else
+            puts "insuficient quantity"
+          end
+        else
+          count+=1
+          if count == 1
+            puts "book not available."
+          end  
         end
       end
     else
-      puts "The information provided by you is not available in our records."
+      puts "Quantity should be greater then zero!"
+    end     
+  end
+  
+  def self.details
+    Issue_details.select do |i|
+      puts "cust_id = #{i.cust_id} \n book_id = #{i.book_id}\n book_name = #{i.book_name}\n book_author = #{i.author}\n student name = #{i.name} \n quantity = #{i.qty}"
+    end   
+  end
+
+  def self.return
+    print "Enter book name you want to return :"
+    name = gets.chomp
+    print "Enter quantity :"
+    qty = gets.to_i
+    Issue_details.find do |i|
+      if i.book_name == name
+        i.qty -= qty
+        puts "Book return successfully"
+      else
+        puts "The information provided by you is not available in our records."
+      end
+    end
+    Book::Books.find do |book|
+      if book.name == name
+        book.qty += qty
+      end
     end
   end
 end
