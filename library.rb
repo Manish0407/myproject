@@ -45,12 +45,12 @@ module Library
 
     when 7
       self.clear
-      self.signup_student
+      users.signup_student
       self.admin_repeat
 
     when 8
       self.clear
-      self.signup_admin    
+      users.signup_admin    
       self.admin_repeat    
 
     when 9                 # for logout
@@ -62,48 +62,48 @@ module Library
     end
   end
 
-  def Library.student(choice)
+  def self.student(choice)
     @choice = choice
 
     case @choice
     when 1                # for book details.
-      Library.clear
+      self.clear
       Book.collection
-      Library.student_repeat
+      self.student_repeat
 
     when 2                           #for book issue
-      Library.clear
+      self.clear
       BookIssue.issue
-      Library.student_repeat
+      self.student_repeat
 
     when 3                           #for return book.
-      Library.clear
+      self.clear
       BookIssue.return
-      Library.student_repeat
+      self.student_repeat
 
     when 4
-      Library.logout
+      self.logout
     else
-      Library.clear
+      self.clear
       puts "you entered a invailed key please enter a valid key"
-      Library.student_choice
+      self.student_choice
     end
   end
 
-  def Library.clear
+  def self.clear
     print "\e[2J\e[f"
   end
 
-  def Library.logout
+  def self.logout
     puts "......................Logout........................"
     puts "do you want to continue (yes/y), "
     print "or any key for exit : "
     input = gets.chomp
     if input == "yes" || input == "y"
-      Library.clear
-      Library.start
+      self.clear
+      self.start
     else
-      Library.clear
+      self.clear
       puts "=============================================================================================================================================="
       puts "...............................................................Thank You!................................................................."
       puts "=============================================================================================================================================="
@@ -111,7 +111,7 @@ module Library
     end
   end
 end
-Library.clear
+self.clear
 puts "=============================================================================================================================================="
 puts "......................................Welcome to the shriffle library, Hope you are having a great day!......................................"
 puts "=============================================================================================================================================="
@@ -120,4 +120,4 @@ Book.new("computer science","klp",10)
 Book.new("data science","AD",10)
 Book.new("ruby","K",10)
 Book.new("python","Rosam",10)
-Library.first
+users.first

@@ -1,16 +1,29 @@
 $LOAD_PATH << '.'
 require 'admin.rb'
 require 'student.rb'
-module Users
-  extend Admin
-  extend Student
-  def first
+class Users
+  #extend Admin
+  #extend Student
+  STUDENT = []
+  attr_accessor :s_id :username, :password, :book
+  def initialize(name,pass,book)
+    @s_id = set_incremental_id
+    @name = name
+    @pass = pass
+    @book = book
+
+    STUDENT << self
+  end
+  def set_incremental_id
+    (Books.last&.id || 0) + 1
+  end
+  def self.first
     @admin_user = [{"admin" => "admin123"}]
     @student_user = []
     start
   end
   
-  def start
+  def self.start
     puts "A. admin."
     puts "S. student."
     puts "E. exit."
@@ -43,7 +56,7 @@ module Users
       start           
     end
   end
-  def user
+  def self.user
     print "Enter username : "
     username = gets.chomp
     print "Enter password : "
@@ -58,11 +71,15 @@ module Users
       puts "...................................Welcome to admin page..............................."
       puts "======================================================================================="
       Users.admin_choice
-    elsif @student_user.include?signin
-      puts "======================================================================================="
-      puts "...................................Welcome to student page..............................."
-      puts "======================================================================================="
-      Users.student_choice
+    elsif STUDENT.include?username
+      if STUDENT.include?password
+        S_name = username
+        puts "======================================================================================="
+        puts "...................................Welcome #{username}..............................."
+        puts "======================================================================================="  
+        Users.student_choice
+      end
+    end    
     
     else
       puts "Wrong username or password!"
@@ -70,20 +87,21 @@ module Users
     end
   end
 
-  def signup_student
+  def self.signup_student
     print "Enter username : "
     username = gets.chomp
     print "Enter password : "
     password = gets.chomp
     
-    signup = {
-      username => password
-    }
-    @student_user.push(signup)
-    puts "New student created successfully!"
+    if STUDENT.include?username
+      puts "student already exist"
+    else  
+      users.new(username,password,0)
+      puts "New student created successfully!"
+    end  
   end
 
-  def signup_admin
+  def self.signup_admin
     print "Enter username : "
     username = gets.chomp
     print "Enter password : "

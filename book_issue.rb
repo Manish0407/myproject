@@ -2,12 +2,9 @@ require 'book.rb'
 class BookIssue 
   Issue_details = []
   ARR = []
-  attr_accessor :cust_id, :book_id, :book_name, :author, :name, :qty
-  def initialize(cust_id, book_id, book_name, book_author, name,qty)
-    @cust_id = cust_id
-    @book_id = book_id
+  attr_accessor :name, :book_name, :qty
+  def initialize(book_name,qty)
     @book_name = book_name
-    @author = book_author
     @name = name
     @qty = qty
 
@@ -37,6 +34,8 @@ class BookIssue
           end
         end
       else
+        Users::STUDENT.find do |name|
+          name.book.last
         puts "you cancel the request."
       end
     end
@@ -44,35 +43,25 @@ class BookIssue
   
   def self.issue
     count = 0
-    print "Enter cust id : "
-    cust_id = gets.to_i
-    print "Enter book id : "
-    book_id = gets.to_i
     print "Enter book name : "
     book_name = gets.chomp
-    print "Enter author name : "
-    book_author = gets.chomp
-    print "Enter student name : "
-    name = gets.chomp
     print "Enter book qty : "
     qty = gets.to_i
     if qty != 0
       Book::Books.find do |book|
         if book.name == book_name
           if book.qty >= qty
-            if book.author == book_author
-              BookIssue.new(cust_id, book_id, book_name, book_author, name,qty)
-            else
-              puts "you entered wrong author name."
+            Users::STUDENT.find do |name|
+              if Users::S_name == name.name
+                name.book += qty
+                BookIssue.new(name.name,book_name, qty)
+              end
             end  
           else
             puts "insuficient quantity"
           end
         else
-          count+=1
-          if count == 1
-            puts "book not available."
-          end  
+          puts "book not available."
         end
       end
     else
