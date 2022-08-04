@@ -1,25 +1,20 @@
 $LOAD_PATH << '.'
 require 'admin.rb'
 require 'student.rb'
+require 'book_issue.rb'
+require 'book.rb'
 class Users
-  #extend Admin
-  #extend Student
   STUDENT = []
-  attr_accessor :s_id :username, :password, :book
-  def initialize(name,pass,book)
-    @s_id = set_incremental_id
-    @name = name
-    @pass = pass
-    @book = book
+  attr_accessor :username, :password
+  def initialize(username,password)
+    @username = username
+    @password = password
 
     STUDENT << self
   end
-  def set_incremental_id
-    (Books.last&.id || 0) + 1
-  end
+  
   def self.first
     @admin_user = [{"admin" => "admin123"}]
-    @student_user = []
     start
   end
   
@@ -29,18 +24,11 @@ class Users
     puts "E. exit."
     input = gets.chomp
     if input == "a" || input == "A"
-      puts "1. for signin."
-      puts "\t Press any key for back."
-      choice = gets.to_i
-      if choice == 1
         user
-      else
-        start
-      end
     elsif input == "s" || input == "S"
       puts "1. signin."
       puts "2. signup."
-      puts "\t Press any key for back."
+      puts "[any key]. for back."
       choice = gets.to_i 
       if choice == 1
         user
@@ -56,35 +44,40 @@ class Users
       start           
     end
   end
+
+  def self.find_by(username,password)
+    STUDENT.select { |i| i.username == username && i.password == password}.first
+  end  
+
   def self.user
+    # SNAME = ""
     print "Enter username : "
-    username = gets.chomp
+    username = gets.strip
     print "Enter password : "
-    password = gets.chomp
+    password = gets.strip
 
     signin = {
       username => password
     }
-
-    if @admin_user.include?signin
+    if Users.find_by(username,password)  
+      @@s_name = username
+      puts "======================================================================================="
+      puts "...................................Welcome #{username}..............................."
+      puts "======================================================================================="  
+      Student.student_choice
+    elsif @admin_user.include?signin
       puts "======================================================================================="
       puts "...................................Welcome to admin page..............................."
       puts "======================================================================================="
-      Users.admin_choice
-    elsif STUDENT.include?username
-      if STUDENT.include?password
-        S_name = username
-        puts "======================================================================================="
-        puts "...................................Welcome #{username}..............................."
-        puts "======================================================================================="  
-        Users.student_choice
-      end
-    end    
-    
+      Admin.admin_choice    
     else
       puts "Wrong username or password!"
-        user
+      self.user
     end
+  end
+
+  def self.name
+    @@s_name
   end
 
   def self.signup_student
@@ -95,9 +88,19 @@ class Users
     
     if STUDENT.include?username
       puts "student already exist"
-    else  
-      users.new(username,password,0)
-      puts "New student created successfully!"
+    else 
+      if username.length < 3 
+        puts "username should be minimum 3 charecter"
+      else
+        if password.length < 3
+          puts "password should be minimum 3 charecter" 
+        else   
+          puts "New student created successfully!"
+          Users.new(username,password)
+          BookIssue.new(username,nil,0)
+          BookIssue.students
+        end
+      end
     end  
   end
 
@@ -110,7 +113,15 @@ class Users
     signup = {
       username => password
     }
-    @admin_user.push(signup)
-    puts "New admin created successfully!"
+    if username.length < 3 
+      puts "username should be minimum 3 charecter"
+    else
+      if password.length < 3
+        puts "password should be minimum 3 charecter" 
+      else   
+        @admin_user.push(signup)
+        puts "New admin created successfully!"
+      end
+    end
   end
 end
