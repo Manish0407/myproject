@@ -5,7 +5,7 @@ require 'users.rb'
 require 'student.rb'
 require 'admin.rb'
 module Library
-  extend Users
+  #extend Users
   extend Admin
   extend Student
   def self.admin(choice)
@@ -13,52 +13,52 @@ module Library
 
     case @choice
     when 1                # for create new book.
-      self.clear
+      Library.clear
       Book.book_add  
-      self.admin_repeat
+      Admin.admin_choice
 
     when 2                # for update book quantity.
-      self.clear
+      Library.clear
       Book.update
-      self.admin_repeat
+      Admin.admin_choice
 
    
     when 3                #for show book collection.
-      self.clear
+      Library.clear
       Book.collection
-      self.admin_repeat
+      Admin.admin_choice
 
     when 4                #for delete book quantity.
-      self.clear
+      Library.clear
       Book.delete
-      self.admin_repeat  
+      Admin.admin_choice  
 
     when 5                #for issue requests.
-      self.clear
+      Library.clear
       BookIssue.request
-      self.admin_repeat    
+      Admin.admin_choice    
 
     when 6                 # for student details.
-      self.clear
+      Library.clear
       BookIssue.details
-      self.admin_repeat
+      Admin.admin_choice
 
     when 7
-      self.clear
+      Library.clear
       users.signup_student
-      self.admin_repeat
+      Admin.admin_choice
 
     when 8
-      self.clear
+      Library.clear
       users.signup_admin    
-      self.admin_repeat    
+      Admin.admin_choice    
 
     when 9                 # for logout
-      self.logout
+      Library.logout
     else
-      self.clear
+      Library.clear
       puts "you entered a invailed key please enter a valid key"
-      self.admin_choice
+      Admin.admin_choice
     end
   end
 
@@ -67,26 +67,29 @@ module Library
 
     case @choice
     when 1                # for book details.
-      self.clear
+      Library.clear
       Book.collection
-      self.student_repeat
+      Student.student_choice
 
     when 2                           #for book issue
-      self.clear
+      Library.clear
       BookIssue.issue
-      self.student_repeat
+      Student.student_choice
 
     when 3                           #for return book.
-      self.clear
+      Library.clear
       BookIssue.return
-      self.student_repeat
+      Student.student_choice
 
     when 4
-      self.logout
+      BookIssue.allotment  
+      Student.student_choice
+    when 5
+      Library.logout
     else
-      self.clear
+      Library.clear
       puts "you entered a invailed key please enter a valid key"
-      self.student_choice
+      Student.student_choice
     end
   end
 
@@ -100,10 +103,10 @@ module Library
     print "or any key for exit : "
     input = gets.chomp
     if input == "yes" || input == "y"
-      self.clear
-      self.start
+      Library.clear
+      Users.start
     else
-      self.clear
+      Library.clear
       puts "=============================================================================================================================================="
       puts "...............................................................Thank You!................................................................."
       puts "=============================================================================================================================================="
@@ -111,7 +114,7 @@ module Library
     end
   end
 end
-self.clear
+Library.clear
 puts "=============================================================================================================================================="
 puts "......................................Welcome to the shriffle library, Hope you are having a great day!......................................"
 puts "=============================================================================================================================================="
@@ -120,4 +123,14 @@ Book.new("computer science","klp",10)
 Book.new("data science","AD",10)
 Book.new("ruby","K",10)
 Book.new("python","Rosam",10)
-users.first
+
+BookIssue.new("manish",nil,0)
+BookIssue.new("pratik",nil,0)
+BookIssue.new("shashank",nil,0)
+BookIssue.new("urvashi",nil,0)
+
+Users.new("manish","manish04")
+Users.new("pratik","pratik12")
+Users.new("shashank","sha12")
+Users.new("urvashi","urvashi12")
+Users.first
