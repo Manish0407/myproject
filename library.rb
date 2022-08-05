@@ -4,12 +4,14 @@ require 'book.rb'
 require 'users.rb'
 require 'student.rb'
 require 'admin.rb'
+require 'seed.rb'
 module Library
   extend Admin
   extend Student
   def self.admin(choice)
     @choice = choice
 
+    Library.clear
     case @choice
     when 1                # for create new book.
       Library.clear
@@ -32,27 +34,32 @@ module Library
       Book.delete
       Admin.admin_choice  
 
-    when 5                #for issue requests.
+    when 5
       Library.clear
-      BookIssue.request
+      BookIssue.request 
+      Admin.admin_choice
+      
+    when 6                #for issue requests.
+      Library.clear
+      BookIssue.check_return 
       Admin.admin_choice    
 
-    when 6                 # for student details.
+    when 7                 # for student details.
       Library.clear
       BookIssue.details
       Admin.admin_choice
 
-    when 7
-      Library.clear
-      users.signup_student
-      Admin.admin_choice
-
     when 8
       Library.clear
-      users.signup_admin    
+      Users.signup_student
+      Admin.admin_choice
+
+    when 9
+      Library.clear
+      Users.signup_admin    
       Admin.admin_choice    
 
-    when 9                 # for logout
+    when 10                 # for logout
       Library.logout
     else
       Library.clear
@@ -90,6 +97,7 @@ module Library
         puts "you entered a invailed key please enter a valid key"
         Student.student_choice
     end
+
   end
 
   def self.clear
@@ -117,19 +125,5 @@ Library.clear
 puts "=============================================================================================================================================="
 puts "......................................Welcome to the shriffle library, Hope you are having a great day!......................................"
 puts "=============================================================================================================================================="
-Book.new("c","denis",10)
-Book.new("computer science","klp",10)
-Book.new("data science","AD",10)
-Book.new("ruby","K",10)
-Book.new("python","Rosam",10)
-
-BookIssue.new("manish",nil,0)
-BookIssue.new("pratik",nil,0)
-BookIssue.new("shashank",nil,0)
-BookIssue.new("urvashi",nil,0)
-
-Users.new("manish","manish04")
-Users.new("pratik","pratik12")
-Users.new("shashank","sha12")
-Users.new("urvashi","urvashi12")
+Seed.seeds
 Users.first
