@@ -7,7 +7,6 @@ module Student
     puts "\t \t5. Logout."
     print "\t \tPlease enter your choice : "
     choice = gets.to_i
-    Library.student(choice)
-    
+    Library.student(choice)  
   end
 end

@@ -5,7 +5,6 @@ require 'users.rb'
 require 'student.rb'
 require 'admin.rb'
 module Library
-  #extend Users
   extend Admin
   extend Student
   def self.admin(choice)
@@ -63,33 +62,33 @@ module Library
   end
 
   def self.student(choice)
-    @choice = choice
 
-    case @choice
-    when 1                # for book details.
-      Library.clear
-      Book.collection
-      Student.student_choice
+    case choice
+      when 1                # for book details.
+        Library.clear
+        Book.collection
+        Student.student_choice
 
-    when 2                           #for book issue
-      Library.clear
-      BookIssue.issue
-      Student.student_choice
+      when 2                           #for book issue
+        Library.clear
+        BookIssue.issue
+        Student.student_choice
 
-    when 3                           #for return book.
-      Library.clear
-      BookIssue.return
-      Student.student_choice
+      when 3                           #for return book.
+        Library.clear
+        BookIssue.return
+        Student.student_choice
 
-    when 4
-      BookIssue.allotment  
-      Student.student_choice
-    when 5
-      Library.logout
-    else
-      Library.clear
-      puts "you entered a invailed key please enter a valid key"
-      Student.student_choice
+      when 4
+        BookIssue.issue_status  
+        Student.student_choice
+
+      when 5
+        Library.logout
+      else
+        Library.clear
+        puts "you entered a invailed key please enter a valid key"
+        Student.student_choice
     end
   end
 

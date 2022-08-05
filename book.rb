@@ -1,4 +1,7 @@
 require 'book_issue.rb'
+require 'users.rb'
+require 'student.rb'
+require 'admin.rb'
 class Book
   Books = []
   attr_accessor :id, :name, :author, :qty

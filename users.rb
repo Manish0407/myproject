@@ -5,12 +5,17 @@ require 'book_issue.rb'
 require 'book.rb'
 class Users
   STUDENT = []
-  attr_accessor :username, :password
+  attr_accessor :s_id, :username, :password
   def initialize(username,password)
+    @s_id = set_id
     @username = username
     @password = password
 
     STUDENT << self
+  end
+
+  def set_id
+    ( STUDENT.last&.s_id || 0 ) + 1
   end
   
   def self.first
@@ -61,6 +66,11 @@ class Users
     }
     if Users.find_by(username,password)  
       @@s_name = username
+      STUDENT.find { |user|
+        if user.username == username
+          @@s_id = user.s_id
+        end
+      }
       puts "======================================================================================="
       puts "...................................Welcome #{username}..............................."
       puts "======================================================================================="  
@@ -78,6 +88,10 @@ class Users
 
   def self.name
     @@s_name
+  end
+
+  def self.s_id
+    @@s_id
   end
 
   def self.signup_student
