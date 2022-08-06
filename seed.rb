@@ -9,11 +9,6 @@ class Seed
     Book.new("ruby","K",10)
     Book.new("python","Rosam",10)
 
-    BookIssue.new("manish","nil",0)
-    BookIssue.new("pratik","nil",0)
-    BookIssue.new("shashank","nil",0)
-    BookIssue.new("urvashi","nil",0)
-
     Users.new("manish","manish04")
     Users.new("pratik","pratik12")
     Users.new("shashank","sha12")

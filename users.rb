@@ -10,6 +10,7 @@ class Users
     @password = password
 
     STUDENT << self
+    BookIssue.new(@s_id,@username,"nil","nil")
   end
 
   def set_id

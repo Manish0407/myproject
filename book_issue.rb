@@ -7,16 +7,12 @@ class BookIssue
   Issue_details = []
   attr_accessor :s_id, :name, :book_name, :status
 
-  def initialize(name,book_name,status)
-    @s_id = set_incremental_id
-    @name = name
-    @book_name = book_name
-    @status = status
-    Issue_details << self
-  end
-
-  def set_incremental_id
-    (Issue_details.last&.s_id || 0) + 1
+  def initialize(s_id,name,book_name,status)
+      @s_id = s_id
+      @name = name
+      @book_name = book_name
+      @status = status
+      Issue_details << self
   end
 
   class << self
@@ -26,7 +22,6 @@ class BookIssue
       Issue_details.select do |i|
         if i.name == Users.name
           puts "Name = #{i.name}\n Book = #{i.book_name}\n Status = #{i.status}"
-          break
         end
       end   
     end
@@ -39,40 +34,46 @@ class BookIssue
             puts
           end
         end  
-        puts "Enter id whose you want to allot."
+        puts "Enter id for change the status."
         id = gets.to_i
-        Issue_details.select do |r|
-          if id == r.s_id
-            puts "allot / cancel / or any key for back"
-            status = gets.chomp
-            if status == "allot"
-              r.status = status
-              Book::Books.find do |book|
-                if book.name == r.book_name
-                  book.qty -= 1
-                  puts "Book issued successfully."
-                  if BookIssue.pending_requests == true
-                    puts "Do you want to see remaining pending request (y/n)"
-                    input = gets.chomp
-                    if input == "y"
-                      BookIssue.request
-                    else
-                      Admin.admin_choice
-                    end  
-                  end  
+        puts "Book name : "
+        b_name = gets.chomp
+        if BookIssue.find_id(id) == true
+          Issue_details.find do |r|
+            if id == r.s_id
+              if b_name == r.book_name
+                puts "allot / cancel / or any key for back"
+                status = gets.chomp
+                if status == "allot"
+                  r.status = status
+                  Book::Books.find do |book|
+                    if book.name == b_name
+                      book.qty -= 1
+                      puts "Book issued successfully."
+                      if BookIssue.pending_requests == true
+                        puts "Do you want to see remaining pending request (y/n)"
+                        input = gets.chomp
+                        if input == "y"
+                          BookIssue.request
+                        else
+                          Admin.admin_choice
+                        end  
+                      end  
+                    end
+                  end
+                elsif status == "cancel"
+                  r.status == status
+                  r.book_name = "nil"
+                  puts "you cancel the request."  
+                else
+                  Admin.admin_choice  
                 end
-              end
-            elsif status == "cancel"
-              r.status == status
-              r.book_name = "nil"
-              puts "you cancel the request."  
-            else
-              Admin.admin_choice  
+              end 
             end
-          else
-            puts "Invalid ID"  
           end
-        end
+        else
+          puts "Invalid ID" 
+        end  
       else
         puts "No book request......."  
       end        
@@ -104,6 +105,14 @@ class BookIssue
       Issue_details.select { |item| item.book_name == book_name }.first
     end
 
+    def find_id(id)
+      Issue_details.find do |r|
+        if r.s_id == id
+          return true
+        end
+      end  
+    end  
+
     def check_return
       if BookIssue.return_status == true
         Issue_details.find do |i|
@@ -114,39 +123,47 @@ class BookIssue
         end  
         puts "Enter id which status do you want to change."
         id = gets.to_i
-        Issue_details.find do |r|
-          if id == r.s_id
-            puts "diposit / cancel / or any key for back"
-            status = gets.chomp
-            if status == "diposit"
-              r.status = status
-              Book::Books.find do |book|
-                if book.name == r.book_name
-                  book.qty += 1
-                  puts "Book diposit successfully."
-                  if BookIssue.return_status == true
-                    puts "Do you want to see remaining pending request (y/n)"
-                    input = gets.chomp
-                    if input == "y"
-                      BookIssue.check_return
-                    else
-                      Admin.admin_choice
-                    end  
-                  end  
+        puts "Enter book name : "
+        b_name = gets.chomp
+        if BookIssue.find_id(id) == true
+          Issue_details.find do |r|
+            if id == r.s_id
+              if b_name == r.book_name
+                puts "deposit / cancel / or any key for back"
+                status = gets.chomp
+                if status == "deposit"
+                  r.status = status
+                  Book::Books.find do |book|
+                    if book.name == b_name
+                      book.qty += 1
+                      puts "Book deposit successfully."
+                      if BookIssue.return_status == true
+                        puts "Do you want to see remaining pending request (y/n)"
+                        input = gets.chomp
+                        if input == "y"
+                          BookIssue.check_return
+                        else
+                          Admin.admin_choice
+                        end 
+                      else
+                        break   
+                      end  
+                    end
+                  end
+                elsif status == "cancel"
+                  r.status = "allot"
+                  puts "you cancel the request."  
+                else
+                  Admin.admin_choice  
                 end
-              end
-            elsif status == "cancel"
-              r.status = "allot"
-              puts "you cancel the request."  
-            else
-              Admin.admin_choice  
+              end   
             end
-          else
-            puts "Invalid ID"  
           end
-        end
+        else
+          puts "Invalid ID" 
+        end    
       else
-        puts "No book request......."  
+        puts "No book return request......."  
       end        
     end  
 
@@ -158,23 +175,35 @@ class BookIssue
       end  
     end  
 
-    def return
-      print "Enter book name you want to return :"
-      return_book_name = gets.chomp
+    def find_by_book(return_book_name)
       Issue_details.find { |user|
         if user.s_id.eql? Users.s_id
           if user.book_name == return_book_name
-            if user.status == "allot"
-              user.status = "return"
-              puts "Book returned request sent to admin!"
-            else
-              puts "Please check book status"
-            end        
-          else
-            puts "this book is not alloted to you"  
+            return true
           end
         end
       }
+    end
+
+    def return
+      print "Enter book name you want to return :"
+      return_book_name = gets.chomp
+      if BookIssue.find_by_book(return_book_name) == true
+        Issue_details.find { |user|
+          if user.s_id.eql? Users.s_id
+            if user.book_name == return_book_name
+              if user.status == "allot"
+                user.status = "return"
+                puts "Book returned request sent to admin!"
+              else
+                puts "Please check book status"
+              end          
+            end
+          end
+        }
+      else
+        puts "this book is not alloted to you"  
+      end
     end
 
     def issue
@@ -186,15 +215,17 @@ class BookIssue
           if book.name == book_name
             if book.qty >= 1
               Issue_details.find { |user|
-              if user.s_id.eql? Users.s_id
-                if user.book_name == "nil" || user.book_name == "cancel"
-                  user.status = "Pending"
-                  user.book_name = book_name
-                  puts "book request sent to admin!"
-                else
-                  puts "you can not request for book first check your status."  
+                if user.s_id.eql? Users.s_id
+                  if user.book_name == "nil" || user.book_name == "cancel"
+                    user.status = "Pending"
+                    user.book_name = book_name
+                    puts "book request sent to admin!"
+                  else
+                    BookIssue.new(user.s_id,user.name,book_name,"Pending") 
+                    puts "book request sent to admin!" 
+                    break
+                  end
                 end
-              end
               }
             else
               puts "insuficient quantity"
@@ -205,6 +236,5 @@ class BookIssue
         puts "book not available."  
       end
     end
-
   end
 end
