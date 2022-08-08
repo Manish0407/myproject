@@ -110,7 +110,6 @@ class Users
           else   
             puts "New student created successfully!"
             Users.new(username,password)
-            BookIssue.new(username,"nil",0)
           end
         end
       end  

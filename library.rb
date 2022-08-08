@@ -45,7 +45,6 @@ module Library
       Admin.admin_choice    
 
     when 7                 # for student details.
-      Library.clear
       BookIssue.details
       Admin.admin_choice
 

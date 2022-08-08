@@ -89,7 +89,9 @@ class BookIssue
 
     def details
       Issue_details.select do |i|
-        puts "Name = #{i.name}\n Book = #{i.book_name}\n Status = #{i.status}"
+        if i.status != "Pending"
+          puts "Name = #{i.name}\n Book = #{i.book_name}\n Status = #{i.status}"
+        end  
       end   
     end
 
@@ -216,15 +218,20 @@ class BookIssue
             if book.qty >= 1
               Issue_details.find { |user|
                 if user.s_id.eql? Users.s_id
-                  if user.book_name == "nil" || user.book_name == "cancel"
-                    user.status = "Pending"
-                    user.book_name = book_name
-                    puts "book request sent to admin!"
+                  if user.book_name != book_name
+                    if user.book_name == "nil" || user.book_name == "cancel"
+                      user.status = "Pending"
+                      user.book_name = book_name
+                      puts "book request sent to admin!"
+                    else
+                      BookIssue.new(user.s_id,user.name,book_name,"Pending") 
+                      puts "book request sent to admin!" 
+                      break
+                    end
                   else
-                    BookIssue.new(user.s_id,user.name,book_name,"Pending") 
-                    puts "book request sent to admin!" 
+                    puts "you already applied for this book"
                     break
-                  end
+                  end    
                 end
               }
             else
